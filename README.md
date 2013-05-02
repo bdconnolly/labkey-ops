@@ -21,6 +21,7 @@ The scripts and tools that you find here are either in development or have not y
     * If you have questions or need support, please post a message on the [LabKey Server Community Forum](https://www.labkey.org/project/home/Server/Forum/begin.view?).
 * labkey-database-backup-sample-script.bat: This script can be used to perform a nightly backup (using pg_dump) of databases on a PostgreSQL server instance.
     * This script is not officially supported by LabKey and there is currently no documentation for it.
+    * See [blog entry](http://fourproc.com/2013/05/02/using-labkey-s-sample-backup-script-to-backup-your-postgresql-database.html) for more information on using the script.
 
 ## Support 
 
