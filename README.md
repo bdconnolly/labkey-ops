@@ -19,7 +19,8 @@ The scripts and tools that you find here are either in development or have not y
     * This script is not officially supported by LabKey and there is currently no documentation for it. However, I regularly use a modified version of this on my test servers.
     * Do not use this script if you installed your LabKey Remote Pipeline Server using the [Windows Installer](https://www.labkey.org/wiki/home/Documentation/page.view?name=configWindows). Please use the Windows Installer to upgrade your server.
     * If you have questions or need support, please post a message on the [LabKey Server Community Forum](https://www.labkey.org/project/home/Server/Forum/begin.view?).
-
+* labkey-database-backup-sample-script.bat: This script can be used to perform a nightly backup (using pg_dump) of databases on a PostgreSQL server instance.
+    * This script is not officially supported by LabKey and there is currently no documentation for it.
 
 ## Support 
 
