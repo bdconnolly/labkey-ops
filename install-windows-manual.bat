@@ -5,7 +5,7 @@
 @REM
 @REM This script assumes that 
 @REM    - pre-requisite software has been already been installed.
-@REM     -- Apache Tomcat
+@REM     -- Apache Tomcat v6.0.x or greater
 @REM     -- Oracle JAVA
 @REM    - Tomcat is installed as a Windows Service
 @REM
@@ -14,7 +14,7 @@
 @REM
 @REM This script requires the unzipped distribution directory name to be entered on 
 @REM the command line. For example 
-@REM   install-windows-manual.bat LabKey13.1-r23489-bin
+@REM   install-windows-manual.bat LabKey13.3-r28123-bin
 
 
 @REM Variables
@@ -30,7 +30,7 @@
 @set labkey_distdir=c:\labkey\src\labkey
 @set labkey_home=c:\labkey\labkey
 @set catalina_home=c:\labkey\apps\tomcat
-@set service_name=Tomcat6
+@set service_name=Tomcat7
 
 
 @REM Tests
@@ -41,7 +41,7 @@
 @REM Check command line options
 @if "%1" == "" goto commandlinewrong
 @REM Check if Windows service exists 
-@sc query | find /I "%service_name%" > nul
+@sc query state= all | find /I "%service_name%" > nul
 @if ERRORLEVEL 1 GOTO servicemissing
 @REM Check if the directories exist
 @if not exist "%labkey_distdir%\%1" @set cdir=%labkey_distdir%\%1 && goto dirnotvalid
@@ -70,8 +70,9 @@ net stop "%service_name%"
     @if not exist "%labkey_home%" goto labkeyhomemissing
 )
 
-@REM Check if labkey_home contains any files of subdirectories
-@dir /b /a "%labkey_home%"|@findstr .>nul:&&(goto containsfile)
+@REM Check if labkey_home contains any files or subdirectories
+@dir /b /a "%labkey_home%"|@findstr .>nul
+@if %ERRORLEVEL%==0 goto containsfiles
 
 @REM Create directories in labkey_home
 mkdir "%labkey_home%\labkeywebapp"
@@ -82,12 +83,11 @@ xcopy /y /Q /E /H "%labkey_distdir%\%1\labkeywebapp" "%labkey_home%\labkeywebapp
 xcopy /y /Q /E /H "%labkey_distdir%\%1\modules" "%labkey_home%\modules"
 xcopy /y /Q /E /H "%labkey_distdir%\%1\pipeline-lib" "%labkey_home%\pipeline-lib"
 xcopy /y /Q /E /H "%labkey_distdir%\%1\bin" "%labkey_home%\bin"
-copy /y "%labkey_distdir%\%1\server-lib"\*.jar "%catalina_home%\lib"
-copy /y "%labkey_distdir%\%1\common-lib"\*.jar "%catalina_home%\lib"
+copy /y "%labkey_distdir%\%1\tomcat-lib"\*.jar "%catalina_home%\lib"
 
-@REM Create the %catalina_home%\Catalina\localhost directory if it does not exist
-@if not exist "%catalina_home%\Catalina\localhost" (
-    mkdir "%catalina_home%\Catalina\localhost"
+@REM Create the %catalina_home%\conf\Catalina\localhost directory if it does not exist
+@if not exist "%catalina_home%\conf\Catalina\localhost" (
+    mkdir "%catalina_home%\conf\Catalina\localhost"
     @if not exist "%catalina_home%\Catalina\localhost" goto labkeyhomemissing
 )
 
@@ -107,7 +107,7 @@ copy /y "%labkey_distdir%\%1\common-lib"\*.jar "%catalina_home%\lib"
 @echo       - See https://www.labkey.org/wiki/home/Documentation/page.view?name=cpasxml
 @echo       - appdocbase attribute should be set to %labkey_home%\labkeywebapp
 @echo 4. Start the Tomcat Server by running
-@echo       net start "%service_name"
+@echo       net start "%service_name%"
 
 @goto end
 
@@ -116,7 +116,7 @@ copy /y "%labkey_distdir%\%1\common-lib"\*.jar "%catalina_home%\lib"
 @echo.
 @echo ERROR:
 @echo You must enter the unzipped directory name. 
-@echo For example: %0 LabKey13.1-r23489-bin
+@echo For example: %0 LabKey13.3-r28123-bin
 @goto end
 
 :servicemissing
